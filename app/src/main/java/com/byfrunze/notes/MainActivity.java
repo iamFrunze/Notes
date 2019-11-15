@@ -1,7 +1,10 @@
 package com.byfrunze.notes;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.ItemTouchHelper.Callback;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,8 +34,7 @@ public class MainActivity extends AppCompatActivity {
         final NotesAdapter adapter = new NotesAdapter(notes);
         recyclerViewNotes.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewNotes.setAdapter(adapter);
-
-        //  /******************************** Uses *****************************************/
+        /* ******************************* Uses *****************************************/
 
 
         adapter.setOnNoteClickListener(new NotesAdapter.OnNoteClickListener() {
@@ -47,6 +49,21 @@ public class MainActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         });
+
+        ItemTouchHelper.Callback itemTouchHelperCallback;
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                notes.remove(viewHolder.getAdapterPosition());
+                adapter.notifyDataSetChanged();
+            }
+        });
+        itemTouchHelper.attachToRecyclerView(recyclerViewNotes);
     }
 
     /*********************************************************************************************/
