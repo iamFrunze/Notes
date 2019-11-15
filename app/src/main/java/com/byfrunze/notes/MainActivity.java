@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerViewNotes.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewNotes.setAdapter(adapter);
 
+        /********************************* Использование ******************************************/
+
         adapter.setOnNoteClickListener(new NotesAdapter.OnNoteClickListener() {
             @Override
             public void onNoteClick(int position) {
@@ -45,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    /***********************************************************************************************/
 
     public void onClickAddNote(View view) {
         Intent intent = new Intent(this, AddNoteActivity.class);
