@@ -1,5 +1,6 @@
 package com.byfrunze.notes;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -55,9 +56,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
                 colorId = holder.itemView.getResources().getColor(android.R.color.holo_orange_light);
                 break;
             default:
-                colorId = holder.itemView.getResources().getColor(android.R.color.holo_green_light);
+                colorId = holder.itemView.getResources().getColor(android.R.color.holo_green_dark);
                 break;
         }
+        Log.i("Color", Integer.toString(priority) + note.getDayOfWeek() + note.getPriority());
         holder.textViewTitle.setBackgroundColor(colorId);
     }
 

@@ -7,6 +7,7 @@
     <string name="pr_2">2</string>
     <string name="pr_3">3</string>
     <string name="add_notes_btn">Add Notes</string>
+    <string name="add_info">Add info</string>
     <string-array name="daysOfWeek">
         <item>Понедельник</item>
         <item>Вторник</item>
