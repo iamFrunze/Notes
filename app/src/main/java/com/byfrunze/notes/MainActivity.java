@@ -19,15 +19,16 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerViewNotes;
     private static final ArrayList<Note> notes = new ArrayList<>();
 
-    private NotesDBHelper dbHelper;
-    private SQLiteDatabase database;
     private NotesAdapter adapter;
+
+    private NotesDataBase dataBase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +36,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         recyclerViewNotes = findViewById(R.id.RecViewNotes);
-
-        dbHelper = new NotesDBHelper(this);
-        database = dbHelper.getWritableDatabase();
+        dataBase = NotesDataBase.getInstance(this);
 
         getData();
-
         adapter = new NotesAdapter(notes);
         recyclerViewNotes.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewNotes.setAdapter(adapter);
@@ -74,26 +72,10 @@ public class MainActivity extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(recyclerViewNotes);
     }
 
-    public void getData(){
-        notes.clear();
-        Cursor cursor = database.query(NotesContract.NotesEntry.TABLE_NAME, null, null, null, null, null, NotesContract.NotesEntry.COLUMN_PRIORITY);
-        while (cursor.moveToNext()){
-            int id = cursor.getInt(cursor.getColumnIndex(NotesContract.NotesEntry._ID));
-            String title = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_TITLE));
-            String description = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DESCRIPTIOM));
-            String dayOfWeek = cursor.getString(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_DAY_OF_WEEK));
-            int priority = cursor.getInt(cursor.getColumnIndex(NotesContract.NotesEntry.COLUMN_PRIORITY));
-            Note note = new Note(id, title, description, dayOfWeek, priority);
-            notes.add(note);
-        }
-        cursor.close();
-    }
 
     public void remove(int position){
-        int id = notes.get(position).getId();
-        String where = NotesContract.NotesEntry._ID + " = ?";
-        String[] whereArgs = new String[]{Integer.toString(id)};
-        database.delete(NotesContract.NotesEntry.TABLE_NAME, where, whereArgs);
+        Note note = notes.get(position);
+        dataBase.notesDao().deleteNote(note);
         getData();
         adapter.notifyDataSetChanged();
     }
@@ -103,5 +85,11 @@ public class MainActivity extends AppCompatActivity {
     public void onClickAddNote(View view) {
         Intent intent = new Intent(this, AddNoteActivity.class);
         startActivity(intent);
+    }
+
+    private void getData(){
+       List<Note> notesFromDB = dataBase.notesDao().getAllNotes();
+       notes.clear();
+       notes.addAll(notesFromDB);
     }
 }

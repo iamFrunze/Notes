@@ -1,12 +1,17 @@
 package com.byfrunze.notes;
 
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "notes")
 public class Note {
-private int id;
+    @PrimaryKey(autoGenerate = true)
+    private int id;
     private String title;
     private String description;
     private String dayOfWeek;
     private int priority;
-
 
 
     public Note(int id, String title, String description, String dayOfWeek, int priority) {
@@ -15,6 +20,18 @@ private int id;
         this.description = description;
         this.dayOfWeek = dayOfWeek;
         this.priority = priority;
+    }
+
+    @Ignore
+    public Note(String title, String description, String dayOfWeek, int priority) {
+        this.title = title;
+        this.description = description;
+        this.dayOfWeek = dayOfWeek;
+        this.priority = priority;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getId() {
